@@ -1,27 +1,60 @@
 [package]
 name = "mcp-document"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2024"
 authors = ["James Karanja <james.karanja@zavora.ai>"]
-description = "Document MCP Server — Google Docs and Notion for document management"
+description = "Enterprise Document MCP Server — Google Docs, Google Drive, Notion, and Microsoft OneDrive/SharePoint with full CRUD, search, export, comments, and sharing"
 license = "Apache-2.0"
 repository = "https://github.com/zavora-ai/mcp-document"
 homepage = "https://enterprise.adk-rust.com"
-keywords = ["mcp", "documents", "google-docs", "notion", "adk"]
-categories = ["development-tools"]
+keywords = ["mcp", "documents", "google-docs", "notion", "enterprise"]
+categories = ["development-tools", "api-bindings"]
 readme = "README.md"
 
+[features]
+default = ["google", "notion"]
+google = ["google-docs1", "google-drive3"]
+notion = ["dep:notion-client"]
+microsoft = ["graph-rs-sdk"]
+all-backends = ["google", "notion", "microsoft"]
+
 [dependencies]
+# MCP + SDK
 adk-mcp-sdk = "0.1"
 rmcp = { version = "1.7", features = ["server", "transport-io", "macros"] }
+
+# Serialization
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+# Async
 tokio = { version = "1", features = ["full"] }
-reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+async-trait = "0.1"
+
+# Error handling
 anyhow = "1"
+
+# Schema
+schemars = "1"
+
+# Tracing
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-async-trait = "0.1"
-schemars = "1"
+
+# Google APIs (feature-gated)
+google-docs1 = { version = "7", optional = true }
+google-drive3 = { version = "7", optional = true }
+
+# Notion (feature-gated)
+notion-client = { version = "1.1", optional = true }
+
+# Microsoft Graph (feature-gated, heavy)
+graph-rs-sdk = { version = "3", optional = true, default-features = false, features = ["native-tls"] }
+
+# HTTP (for backends that need raw calls)
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+
+# Environment
+dotenvy = "0.15"
 
 [workspace]
