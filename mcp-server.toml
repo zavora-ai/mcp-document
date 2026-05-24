@@ -1,0 +1,67 @@
+server_id = "mcp_document"
+display_name = "Document"
+version = "1.0.0"
+domain = "productivity"
+sdk_version = "0.1.0"
+risk_level = "medium"
+writes_allowed = "gated"
+transports = ["stdio"]
+credentials = ["vault://google-docs-token", "vault://notion-api-key"]
+governance_gates = []
+environments = ["development", "staging", "production"]
+
+[[tools]]
+name = "list_documents"
+description = "List Google Docs documents"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "get_document"
+description = "Get a Google Doc by ID"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "create_document"
+description = "Create a new Google Doc"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "append_to_document"
+description = "Append text to a Google Doc"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "search_documents"
+description = "Search Google Docs by query"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "list_notion_pages"
+description = "List Notion pages"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "get_notion_page"
+description = "Get a Notion page by ID"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "create_notion_page"
+description = "Create a Notion page"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://notion-api-key"]
