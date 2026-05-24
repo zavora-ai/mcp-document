@@ -39,6 +39,9 @@ pub struct AppendBlocksInput { pub page_id: String, pub markdown: String }
 pub struct QueryDatabaseInput { pub database_id: String, #[serde(default)] pub filter: Option<serde_json::Value> }
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct NotionCommentInput { pub page_id: String, pub text: String }
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+pub struct NotionUpdatePageInput { pub page_id: String, /// Notion properties JSON object
+    pub properties: serde_json::Value }
 // Microsoft inputs
 #[derive(Debug, Deserialize, schemars::JsonSchema)]
 pub struct MsCreateInput { pub name: String, pub content: String }
@@ -159,6 +162,11 @@ impl DocumentServer {
         match &self.notion { Some(n) => match n.add_comment(&i.page_id, &i.text).await { Ok(()) => "Comment added".into(), Err(e) => format!("Error: {e}") }, None => "Notion backend not configured".into() }
     }
 
+    #[tool(description = "Update a Notion page's properties (title, etc.)")]
+    async fn notion_update_page(&self, Parameters(i): Parameters<NotionUpdatePageInput>) -> String {
+        match &self.notion { Some(n) => match n.update_page_properties(&i.page_id, &i.properties).await { Ok(()) => "Page updated".into(), Err(e) => format!("Error: {e}") }, None => "Notion backend not configured".into() }
+    }
+
     // ─── Microsoft OneDrive/SharePoint ───────────────────────────────────────
     #[tool(description = "List documents in OneDrive")]
     async fn ms_list_docs(&self, Parameters(i): Parameters<ListDocsInput>) -> String {
@@ -198,14 +206,6 @@ impl HealthCheck for DocumentServer {
 }
 
 fn base64_encode(data: &[u8]) -> String {
-    const CHARS: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-    data.chunks(3).map(|c| {
-        let t = (c[0] as u32) << 16 | (*c.get(1).unwrap_or(&0) as u32) << 8 | *c.get(2).unwrap_or(&0) as u32;
-        let mut s = String::new();
-        s.push(CHARS[((t >> 18) & 0x3F) as usize] as char);
-        s.push(CHARS[((t >> 12) & 0x3F) as usize] as char);
-        if c.len() > 1 { s.push(CHARS[((t >> 6) & 0x3F) as usize] as char); }
-        if c.len() > 2 { s.push(CHARS[(t & 0x3F) as usize] as char); }
-        s
-    }).collect()
+    use base64::Engine;
+    base64::engine::general_purpose::STANDARD.encode(data)
 }

@@ -20,10 +20,6 @@ impl NotionBackend {
         Self { http: reqwest::Client::new(), api_key }
     }
 
-    fn headers(&self) -> Vec<(&str, String)> {
-        vec![("Notion-Version", "2022-06-28".into())]
-    }
-
     async fn post(&self, url: &str, body: &serde_json::Value) -> Result<serde_json::Value> {
         Ok(self.http.post(url)
             .header("Authorization", format!("Bearer {}", self.api_key))

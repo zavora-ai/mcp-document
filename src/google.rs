@@ -42,7 +42,8 @@ impl GoogleBackend {
     }
 
     pub async fn search_documents(&self, query: &str, max: u32) -> Result<Vec<DocInfo>> {
-        let q = format!("mimeType='application/vnd.google-apps.document' and fullText contains '{query}'");
+        let escaped = query.replace('\\', "\\\\").replace('\'', "\\'");
+        let q = format!("mimeType='application/vnd.google-apps.document' and fullText contains '{escaped}'");
         let resp: serde_json::Value = self.http
             .get("https://www.googleapis.com/drive/v3/files")
             .bearer_auth(&self.token)

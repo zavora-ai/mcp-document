@@ -1,67 +1,227 @@
 server_id = "mcp_document"
 display_name = "Document"
-version = "1.0.0"
+version = "2.0.0"
 domain = "productivity"
 sdk_version = "0.1.0"
 risk_level = "medium"
 writes_allowed = "gated"
 transports = ["stdio"]
-credentials = ["vault://google-docs-token", "vault://notion-api-key"]
+credentials = ["vault://google-docs-token", "vault://notion-api-key", "vault://ms-graph-token"]
 governance_gates = []
 environments = ["development", "staging", "production"]
 
+# ─── Google Docs / Drive (12) ─────────────────────────────────────────────────
+
 [[tools]]
-name = "list_documents"
+name = "google_list_docs"
 description = "List Google Docs documents"
 risk_class = "read_only"
 requires_approval = false
 credential_bindings = ["vault://google-docs-token"]
 
 [[tools]]
-name = "get_document"
-description = "Get a Google Doc by ID"
+name = "google_search_docs"
+description = "Search Google Docs by content"
 risk_class = "read_only"
 requires_approval = false
 credential_bindings = ["vault://google-docs-token"]
 
 [[tools]]
-name = "create_document"
+name = "google_get_doc"
+description = "Get Google Doc metadata and structure"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "google_get_text"
+description = "Get Google Doc as plain text"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "google_create_doc"
 description = "Create a new Google Doc"
-risk_class = "external_write"
+risk_class = "internal_write"
 requires_approval = true
 credential_bindings = ["vault://google-docs-token"]
 
 [[tools]]
-name = "append_to_document"
-description = "Append text to a Google Doc"
-risk_class = "external_write"
+name = "google_insert_text"
+description = "Insert text into a Google Doc at a position"
+risk_class = "internal_write"
 requires_approval = true
 credential_bindings = ["vault://google-docs-token"]
 
 [[tools]]
-name = "search_documents"
-description = "Search Google Docs by query"
+name = "google_replace_text"
+description = "Find and replace text in a Google Doc"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "google_export_doc"
+description = "Export Google Doc as text/plain, text/html, or application/pdf"
 risk_class = "read_only"
 requires_approval = false
 credential_bindings = ["vault://google-docs-token"]
 
 [[tools]]
-name = "list_notion_pages"
+name = "google_list_comments"
+description = "List comments on a Google Doc"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "google_add_comment"
+description = "Add a comment to a Google Doc"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "google_share_doc"
+description = "Share a Google Doc with a user"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://google-docs-token"]
+
+[[tools]]
+name = "google_delete_doc"
+description = "Delete a Google Doc"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://google-docs-token"]
+
+# ─── Notion (10) ──────────────────────────────────────────────────────────────
+
+[[tools]]
+name = "notion_search"
+description = "Search Notion pages and databases"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_list_pages"
 description = "List Notion pages"
 risk_class = "read_only"
 requires_approval = false
 credential_bindings = ["vault://notion-api-key"]
 
 [[tools]]
-name = "get_notion_page"
-description = "Get a Notion page by ID"
+name = "notion_get_page"
+description = "Get a Notion page properties"
 risk_class = "read_only"
 requires_approval = false
 credential_bindings = ["vault://notion-api-key"]
 
 [[tools]]
-name = "create_notion_page"
+name = "notion_get_content"
+description = "Get Notion page content (blocks)"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_create_page"
 description = "Create a Notion page"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_append_blocks"
+description = "Append text blocks to a Notion page"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_archive_page"
+description = "Archive (soft-delete) a Notion page"
 risk_class = "external_write"
 requires_approval = true
 credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_query_database"
+description = "Query a Notion database with optional filter"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_list_comments"
+description = "List comments on a Notion page"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_add_comment"
+description = "Add a comment to a Notion page"
+risk_class = "internal_write"
+requires_approval = false
+credential_bindings = ["vault://notion-api-key"]
+
+[[tools]]
+name = "notion_update_page"
+description = "Update a Notion page's properties (title, etc.)"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://notion-api-key"]
+
+# ─── Microsoft OneDrive (7) ───────────────────────────────────────────────────
+
+[[tools]]
+name = "ms_list_docs"
+description = "List documents in OneDrive"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://ms-graph-token"]
+
+[[tools]]
+name = "ms_search_docs"
+description = "Search documents in OneDrive"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://ms-graph-token"]
+
+[[tools]]
+name = "ms_get_content"
+description = "Get document content from OneDrive"
+risk_class = "read_only"
+requires_approval = false
+credential_bindings = ["vault://ms-graph-token"]
+
+[[tools]]
+name = "ms_create_doc"
+description = "Create a document in OneDrive"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://ms-graph-token"]
+
+[[tools]]
+name = "ms_update_doc"
+description = "Update document content in OneDrive"
+risk_class = "internal_write"
+requires_approval = true
+credential_bindings = ["vault://ms-graph-token"]
+
+[[tools]]
+name = "ms_delete_doc"
+description = "Delete a document from OneDrive"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://ms-graph-token"]
+
+[[tools]]
+name = "ms_share_doc"
+description = "Share a OneDrive document with a user"
+risk_class = "external_write"
+requires_approval = true
+credential_bindings = ["vault://ms-graph-token"]
