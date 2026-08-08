@@ -21,7 +21,7 @@ all-backends = ["google", "notion", "microsoft"]
 [dependencies]
 # MCP + SDK
 adk-mcp-sdk = "0.1"
-rmcp = { version = "1.7", features = ["server", "transport-io", "macros"] }
+rmcp = { version = "3.1.2", features = ["server", "transport-io", "macros"] }
 
 # Serialization
 serde = { version = "1", features = ["derive"] }
