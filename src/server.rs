@@ -68,7 +68,7 @@ pub struct DocumentServer {
     pub microsoft: Option<Arc<MicrosoftBackend>>,
 }
 
-#[tool_router(server_handler)]
+#[tool_router]
 impl DocumentServer {
     // ─── Google Docs ─────────────────────────────────────────────────────────
     #[tool(description = "List Google Docs documents")]
@@ -208,4 +208,11 @@ impl HealthCheck for DocumentServer {
 fn base64_encode(data: &[u8]) -> String {
     use base64::Engine;
     base64::engine::general_purpose::STANDARD.encode(data)
+}
+
+adk_mcp_sdk::mcp_2026_server! {
+    server: DocumentServer,
+    task_tools: ["google_export_doc"],
+    approval_tools: ["google_create_doc", "google_insert_text", "google_replace_text", "google_share_doc", "google_delete_doc", "notion_create_page", "notion_append_blocks", "notion_archive_page", "notion_update_page", "ms_create_doc", "ms_update_doc", "ms_delete_doc", "ms_share_doc"],
+    cache_ttl_ms: 60_000,
 }
