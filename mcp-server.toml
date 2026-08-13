@@ -2,15 +2,13 @@ server_id = "mcp_document"
 display_name = "Document"
 version = "2.0.1"
 domain = "productivity"
-sdk_version = "0.1.0"
-risk_level = "medium"
+sdk_version = "0.2.0"
+risk_level = "high"
 writes_allowed = "gated"
 transports = ["stdio"]
 credentials = ["vault://google-docs-token", "vault://notion-api-key", "vault://ms-graph-token"]
-governance_gates = []
+governance_gates = ["mrtr_approval"]
 environments = ["development", "staging", "production"]
-
-# ─── Google Docs / Drive (12) ─────────────────────────────────────────────────
 
 [[tools]]
 name = "google_list_docs"
@@ -96,8 +94,6 @@ risk_class = "external_write"
 requires_approval = true
 credential_bindings = ["vault://google-docs-token"]
 
-# ─── Notion (10) ──────────────────────────────────────────────────────────────
-
 [[tools]]
 name = "notion_search"
 description = "Search Notion pages and databases"
@@ -174,8 +170,6 @@ description = "Update a Notion page's properties (title, etc.)"
 risk_class = "internal_write"
 requires_approval = true
 credential_bindings = ["vault://notion-api-key"]
-
-# ─── Microsoft OneDrive (7) ───────────────────────────────────────────────────
 
 [[tools]]
 name = "ms_list_docs"
